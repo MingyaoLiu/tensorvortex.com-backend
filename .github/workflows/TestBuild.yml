@@ -1,0 +1,39 @@
+name: Node-Server-AutoBuild&Test
+
+on: 
+  push:
+    branches: master
+    paths-ignore:
+        - 'ng_app/**'
+        - '.github/**'
+        - 'dist/**'
+jobs:
+  build:
+
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Checkout submodules
+      shell: bash
+      run: |
+        git config --global url."https://github.com/".insteadOf "git@github.com:"
+        git submodule sync --recursive
+        git -c "http.extraheader=Authorization: basic ${{secrets.base64_submodule_read}}" -c protocol.version=2 submodule update --init --force --recursive --depth=1
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2-beta
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: npm install, build, and test
+      run: |
+        npm install
+        npm run test
+        npm run build --if-present
+      env:
+        CI: true
+      working-directory: node_server
