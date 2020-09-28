@@ -36,4 +36,3 @@ jobs:
         npm run build --if-present
       env:
         CI: true
-      working-directory: node_server
