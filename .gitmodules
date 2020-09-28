@@ -1,0 +1,3 @@
+[submodule "src/secrets"]
+	path = src/secrets
+	url = git@github.com:MingyaoLiu/tensorvortex.com-secrets.git

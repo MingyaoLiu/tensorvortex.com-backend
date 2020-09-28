@@ -41,8 +41,8 @@ module.exports = {
         new CopyPlugin({
             patterns: [
                 {
-                    from: "src/tensorvortex.com-secrets/cert",
-                    to: "tensorvortex.com-secrets/cert",
+                    from: "src/secrets/cert",
+                    to: "secrets/cert",
                     toType: 'dir',
                 },
             ],

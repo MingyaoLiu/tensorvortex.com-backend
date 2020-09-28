@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { prod_secret } from "../tensorvortex.com-secrets/serverSecret";
+import { prod_secret } from "../secrets/serverSecret";
 
 
 export interface SentenceInterface {

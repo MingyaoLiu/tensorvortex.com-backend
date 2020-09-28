@@ -80,24 +80,24 @@ const startServer = (application: Express) => {
     // Certificate
     const secureContext: any = {
         "liumingyao.com": tls.createSecureContext({
-            key: fs.readFileSync(path.join(__dirname, ("/tensorvortex.com-secrets/cert/www.liumingyao.com/" + getCommonSecret().liumingyao_key_filename)), "utf8"),
-            cert: fs.readFileSync(path.join(__dirname, ("/tensorvortex.com-secrets/cert/www.liumingyao.com/" + getCommonSecret().liumingyao_pem_filename)), "utf8"),
+            key: fs.readFileSync(path.join(__dirname, ("/secrets/cert/www.liumingyao.com/" + getCommonSecret().liumingyao_key_filename)), "utf8"),
+            cert: fs.readFileSync(path.join(__dirname, ("/secrets/cert/www.liumingyao.com/" + getCommonSecret().liumingyao_pem_filename)), "utf8"),
         }),
         "mingyaoliu.com": tls.createSecureContext({
-            key: fs.readFileSync(path.join(__dirname, ("/tensorvortex.com-secrets/cert/www.mingyaoliu.com/" + getCommonSecret().mingyaoliu_key_filename)), "utf8"),
-            cert: fs.readFileSync(path.join(__dirname, ("/tensorvortex.com-secrets/cert/www.mingyaoliu.com/" + getCommonSecret().mingyaoliu_pem_filename)), "utf8"),
+            key: fs.readFileSync(path.join(__dirname, ("/secrets/cert/www.mingyaoliu.com/" + getCommonSecret().mingyaoliu_key_filename)), "utf8"),
+            cert: fs.readFileSync(path.join(__dirname, ("/secrets/cert/www.mingyaoliu.com/" + getCommonSecret().mingyaoliu_pem_filename)), "utf8"),
         }),
         "tensorvortex.com": tls.createSecureContext({
-            key: fs.readFileSync(path.join(__dirname, "/tensorvortex.com-secrets/cert/www.tensorvortex.com/" + getCommonSecret().tensorvortex_com_key_filename), "utf8"),
-            cert: fs.readFileSync(path.join(__dirname, "/tensorvortex.com-secrets/cert/www.tensorvortex.com/" + getCommonSecret().tensorvortex_com_pem_filename), "utf8"),
+            key: fs.readFileSync(path.join(__dirname, "/secrets/cert/www.tensorvortex.com/" + getCommonSecret().tensorvortex_com_key_filename), "utf8"),
+            cert: fs.readFileSync(path.join(__dirname, "/secrets/cert/www.tensorvortex.com/" + getCommonSecret().tensorvortex_com_pem_filename), "utf8"),
         }),
         "tensorvortex.cn": tls.createSecureContext({
-            key: fs.readFileSync(path.join(__dirname, "/tensorvortex.com-secrets/cert/www.tensorvortex.cn/" + getCommonSecret().tensorvortex_cn_key_filename), "utf8"),
-            cert: fs.readFileSync(path.join(__dirname, "/tensorvortex.com-secrets/cert/www.tensorvortex.cn/" + getCommonSecret().tensorvortex_cn_pem_filename), "utf8"),
+            key: fs.readFileSync(path.join(__dirname, "/secrets/cert/www.tensorvortex.cn/" + getCommonSecret().tensorvortex_cn_key_filename), "utf8"),
+            cert: fs.readFileSync(path.join(__dirname, "/secrets/cert/www.tensorvortex.cn/" + getCommonSecret().tensorvortex_cn_pem_filename), "utf8"),
         }),
         "localhost": tls.createSecureContext({
-            key: fs.readFileSync(path.join(__dirname, "/tensorvortex.com-secrets/cert/localhost/" + getCommonSecret().localhost_key_filename), "utf8"),
-            cert: fs.readFileSync(path.join(__dirname, "/tensorvortex.com-secrets/cert/localhost/" + getCommonSecret().localhost_pem_filename), "utf8"),
+            key: fs.readFileSync(path.join(__dirname, "/secrets/cert/localhost/" + getCommonSecret().localhost_key_filename), "utf8"),
+            cert: fs.readFileSync(path.join(__dirname, "/secrets/cert/localhost/" + getCommonSecret().localhost_pem_filename), "utf8"),
             // ca: fs.readFileSync("../path_to_certificate_authority_bundle.ca-bundle1", "utf8"), // this ca property is optional
         }),
     };
@@ -123,8 +123,8 @@ const startServer = (application: Express) => {
                     }
                 }
             },
-            key: fs.readFileSync(path.join(__dirname, "/tensorvortex.com-secrets/cert/localhost/" + getCommonSecret().localhost_key_filename), "utf8"),
-            cert: fs.readFileSync(path.join(__dirname, "/tensorvortex.com-secrets/cert/localhost/" + getCommonSecret().localhost_pem_filename), "utf8"),
+            key: fs.readFileSync(path.join(__dirname, "/secrets/cert/localhost/" + getCommonSecret().localhost_key_filename), "utf8"),
+            cert: fs.readFileSync(path.join(__dirname, "/secrets/cert/localhost/" + getCommonSecret().localhost_pem_filename), "utf8"),
             requestCert: false,
         };
         https.createServer(options, application).listen(app.get("secPort"), () => {
