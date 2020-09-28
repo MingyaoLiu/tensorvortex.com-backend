@@ -39,14 +39,14 @@ const apiLimiter = rateLimit({
 app.use("/api/", apiLimiter);
 
 // Define Express routes
-app.use("/", express.static(path.join(__dirname, "../../dist/ts-app")));
-app.use("/home", express.static(path.join(__dirname, "../../dist/ts-app")));
-app.use("/project", express.static(path.join(__dirname, "../../dist/ts-app")));
-app.use("/blog", express.static(path.join(__dirname, "../../dist/ts-app")));
-app.use("/about", express.static(path.join(__dirname, "../../dist/ts-app")));
-app.use("/blog-gen", express.static(path.join(__dirname, "../../dist/ts-app")));
-app.use("/purchase", express.static(path.join(__dirname, "../../dist/ts-app")));
-app.use("/resume", express.static(path.join(__dirname, "../../dist/ts-app")));
+app.use("/", express.static(path.join(__dirname, "../ts-app")));
+app.use("/home", express.static(path.join(__dirname, "../ts-app")));
+app.use("/project", express.static(path.join(__dirname, "../ts-app")));
+app.use("/blog", express.static(path.join(__dirname, "../ts-app")));
+app.use("/about", express.static(path.join(__dirname, "../ts-app")));
+app.use("/blog-gen", express.static(path.join(__dirname, "../ts-app")));
+app.use("/purchase", express.static(path.join(__dirname, "../ts-app")));
+app.use("/resume", express.static(path.join(__dirname, "../ts-app")));
 
 // Cors
 app.use(cors());
@@ -128,7 +128,7 @@ const startServer = (application: Express) => {
             requestCert: false,
         };
         https.createServer(options, application).listen(app.get("secPort"), () => {
-            console.log("SERVER", " started at https://localhost:", app.get("secPort"));
+            console.log("SERVER", " started at https://localhost:" + app.get("secPort"));
         });
     } catch (err) {
         console.error(err.message);
