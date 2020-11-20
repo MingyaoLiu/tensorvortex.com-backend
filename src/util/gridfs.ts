@@ -171,7 +171,7 @@ export class GridFS {
     }
 
     removeOneFileById = (imageId: ObjectId) => {
-        let promise = new Promise((resolve, reject) => {
+        const promise = new Promise<void>((resolve, reject) => {
             this.checkExistById(imageId)
                 .then((sameId) => {
                     this._bucket.delete(imageId, (err) => {
