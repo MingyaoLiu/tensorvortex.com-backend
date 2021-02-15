@@ -5,10 +5,10 @@
  * @license tensorvortex@2020
  */
 
-import { Request, Response } from "express";
-import { Collection, Db, MongoCallback, MongoClient, ObjectId } from "mongodb";
-import { getConfig } from "../util/config";
-import { GridFS } from "../util/gridfs";
+import { Request, Response } from 'express';
+import { Collection, Db, MongoCallback, MongoClient, ObjectId } from 'mongodb';
+import { getConfig } from '../util/config';
+import { GridFS } from '../util/gridfs';
 
 
 export class ImageDataAccess {
@@ -43,7 +43,7 @@ export class ImageDataAccess {
     }
 
     addOneImage = (req: Request) => {
-        let promise = new Promise((resolve, reject) => {
+        const promise = new Promise((resolve, reject) => {
             this._gfs.addNewFile(req)
                 .then((data) => {
                     return resolve(data);
@@ -56,7 +56,7 @@ export class ImageDataAccess {
     }
 
     updateImageById(imageId: ObjectId, req: Request) {
-        let promise = new Promise((resolve, reject) => {
+        const promise = new Promise((resolve, reject) => {
             this._gfs.removeOneFileById(imageId)
                 .then(() => {
                     return this._gfs.addNewFile(req);

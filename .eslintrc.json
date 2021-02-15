@@ -1,0 +1,106 @@
+{
+    "env": {
+        "browser": true,
+        "node": true,
+        "shared-node-browser": true,
+        "es6": false
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 11,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "rules": {
+        "indent": [
+            "error",
+            4,
+            {
+                "SwitchCase": 1
+            }
+        ],
+        "linebreak-style": [
+            "error",
+            "windows"
+        ],
+        "quotes": [
+            "warn",
+            "single"
+        ],
+        "semi": [
+            "warn",
+            "always"
+        ],
+        "comma-dangle": [
+            "error", 
+            "only-multiline"
+        ],
+        "no-var": [
+            "error"
+        ],
+        "comma-spacing": [
+            "warn", 
+            { 
+                "before": false, 
+                "after": true 
+            }
+        ],
+        "prefer-const": [
+            "warn"
+        ],
+        "camelcase": [
+            "error",
+            {
+                "properties": "always",
+                "ignoreGlobals": true
+            }
+        ],
+        "arrow-spacing": [
+            "warn",
+            { 
+                "before": true, 
+                "after": true 
+            }
+        ],
+        "sort-imports": [
+            "warn",
+            {
+                "ignoreCase": false,
+                "ignoreDeclarationSort": false,
+                "ignoreMemberSort": false,
+                "memberSyntaxSortOrder": ["none", "all", "multiple", "single"],
+                "allowSeparatedGroups": false
+            }
+        ],
+        "class-methods-use-this":[
+            "error"
+        ],
+        "no-trailing-spaces":[
+            "warn"
+        ],
+        "no-eq-null":[
+            "error"
+        ],
+        "no-eval":[
+            "error"
+        ],
+        "block-scoped-var": [
+            "error"
+        ],
+        "consistent-return": [
+            "error"
+        ],
+        "no-unsafe-finally": [
+            "error"
+        ],
+        "array-callback-return":[
+            "error"
+        ]
+    }
+}

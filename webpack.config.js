@@ -1,8 +1,6 @@
-const path = require('path')
-const webpack = require('webpack')
-const nodeExternals = require('webpack-node-externals')
-const CopyPlugin = require('copy-webpack-plugin');
 
+import CopyPlugin from 'copy-webpack-plugin';
+import path from 'path';
 
 module.exports = {
     entry: {
@@ -31,7 +29,7 @@ module.exports = {
                 test: /\.tsx?$/,
                 exclude: /node_modules/,
                 use: {
-                    loader: "ts-loader"
+                    loader: 'ts-loader'
                 }
             }
         ]
@@ -41,11 +39,11 @@ module.exports = {
         new CopyPlugin({
             patterns: [
                 {
-                    from: "src/secrets/cert",
-                    to: "secrets/cert",
+                    from: 'src/secrets/cert',
+                    to: 'secrets/cert',
                     toType: 'dir',
                 },
             ],
         })
     ]
-}
+};

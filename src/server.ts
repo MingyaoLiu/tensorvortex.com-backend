@@ -5,54 +5,58 @@
  * @license tensorvortex@2020
  */
 
-import bodyParser from "body-parser";
-import cors from "cors";
-import express, { Express, Request, Response } from "express";
-const rateLimit = require("express-rate-limit");
-import fs from "fs";
-import http from "http";
-import https from "https";
-import { MongoClient } from "mongodb";
-import path from "path";
-import tls from "tls";
-import { BlogDataAccess } from "./dataAccess/blogDataAccess";
-import { ImageDataAccess } from "./dataAccess/imageDataAccess";
-import { PurchaseDataAccess } from "./dataAccess/purchaseDataAccess";
-import { BlogRoute } from "./route/blogRoute";
-import { ImageRoute } from "./route/imageRoute";
-import { PurchaseRoute } from "./route/purchaseRoute";
-import { getCommonSecret, getConfig } from "./util/config";
-import { GridFS } from "./util/gridfs";
+import { SecureContext, createSecureContext } from 'tls';
+import { getCommonSecret, getConfig } from './util/config';
+
+import { BlogDataAccess } from './dataAccess/blogDataAccess';
+import { BlogRoute } from './route/blogRoute';
+import { Express } from 'express';
+import { GridFS } from './util/gridfs';
+import { ImageDataAccess } from './dataAccess/imageDataAccess';
+import { ImageRoute } from './route/imageRoute';
+import { MongoClient } from 'mongodb';
+import { PurchaseDataAccess } from './dataAccess/purchaseDataAccess';
+import { PurchaseRoute } from './route/purchaseRoute';
+import { SecureServerSessionOptions } from 'http2';
+
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import express from 'express';
+import fs from 'fs';
+import http from 'http';
+import https from 'https';
+import path from 'path';
+import rateLimit from 'express-rate-limit';
 
 // Connection URL
 const mongoURI = getConfig().mongodb;
 
 const app = express();
 
-app.set("secPort", getConfig().httpsPort);
+app.set('secPort', getConfig().httpsPort);
 
 // enable rate limiter
 const apiLimiter = rateLimit({
     windowMs: 1 * 60 * 1000,
     max: 100,
 });
-app.use("/api/", apiLimiter);
+app.use('/api/', apiLimiter);
 
 // Define Express routes
-app.use("/", express.static(path.join(__dirname, "../ts-app")));
-app.use("/home", express.static(path.join(__dirname, "../ts-app")));
-app.use("/project", express.static(path.join(__dirname, "../ts-app")));
-app.use("/blog", express.static(path.join(__dirname, "../ts-app")));
-app.use("/about", express.static(path.join(__dirname, "../ts-app")));
-app.use("/blog-gen", express.static(path.join(__dirname, "../ts-app")));
-app.use("/purchase", express.static(path.join(__dirname, "../ts-app")));
-app.use("/resume", express.static(path.join(__dirname, "../ts-app")));
+app.use('/', express.static(path.join(__dirname, '../ts-app')));
+app.use('/home', express.static(path.join(__dirname, '../ts-app')));
+app.use('/project', express.static(path.join(__dirname, '../ts-app')));
+app.use('/blog', express.static(path.join(__dirname, '../ts-app')));
+app.use('/about', express.static(path.join(__dirname, '../ts-app')));
+app.use('/blog-gen', express.static(path.join(__dirname, '../ts-app')));
+app.use('/purchase', express.static(path.join(__dirname, '../ts-app')));
+app.use('/resume', express.static(path.join(__dirname, '../ts-app')));
 
 // Cors
 app.use(cors());
 app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
 });
 
@@ -78,26 +82,26 @@ const enableRoute = (app: Express, mongo: MongoClient, gfs: GridFS) => {
 const startServer = (application: Express) => {
 
     // Certificate
-    const secureContext: any = {
-        "liumingyao.com": tls.createSecureContext({
-            key: fs.readFileSync(path.join(__dirname, ("/secrets/cert/www.liumingyao.com/" + getCommonSecret().liumingyao_key_filename)), "utf8"),
-            cert: fs.readFileSync(path.join(__dirname, ("/secrets/cert/www.liumingyao.com/" + getCommonSecret().liumingyao_pem_filename)), "utf8"),
+    const secureContext: Record<string, SecureContext> = {
+        'liumingyao.com': createSecureContext({
+            key: fs.readFileSync(path.join(__dirname, ('/secrets/cert/www.liumingyao.com/' + getCommonSecret().liumingyao_key_filename)), 'utf8'),
+            cert: fs.readFileSync(path.join(__dirname, ('/secrets/cert/www.liumingyao.com/' + getCommonSecret().liumingyao_pem_filename)), 'utf8'),
         }),
-        "mingyaoliu.com": tls.createSecureContext({
-            key: fs.readFileSync(path.join(__dirname, ("/secrets/cert/www.mingyaoliu.com/" + getCommonSecret().mingyaoliu_key_filename)), "utf8"),
-            cert: fs.readFileSync(path.join(__dirname, ("/secrets/cert/www.mingyaoliu.com/" + getCommonSecret().mingyaoliu_pem_filename)), "utf8"),
+        'mingyaoliu.com': createSecureContext({
+            key: fs.readFileSync(path.join(__dirname, ('/secrets/cert/www.mingyaoliu.com/' + getCommonSecret().mingyaoliu_key_filename)), 'utf8'),
+            cert: fs.readFileSync(path.join(__dirname, ('/secrets/cert/www.mingyaoliu.com/' + getCommonSecret().mingyaoliu_pem_filename)), 'utf8'),
         }),
-        "tensorvortex.com": tls.createSecureContext({
-            key: fs.readFileSync(path.join(__dirname, "/secrets/cert/www.tensorvortex.com/" + getCommonSecret().tensorvortex_com_key_filename), "utf8"),
-            cert: fs.readFileSync(path.join(__dirname, "/secrets/cert/www.tensorvortex.com/" + getCommonSecret().tensorvortex_com_pem_filename), "utf8"),
+        'tensorvortex.com': createSecureContext({
+            key: fs.readFileSync(path.join(__dirname, '/secrets/cert/www.tensorvortex.com/' + getCommonSecret().tensorvortex_com_key_filename), 'utf8'),
+            cert: fs.readFileSync(path.join(__dirname, '/secrets/cert/www.tensorvortex.com/' + getCommonSecret().tensorvortex_com_pem_filename), 'utf8'),
         }),
-        "tensorvortex.cn": tls.createSecureContext({
-            key: fs.readFileSync(path.join(__dirname, "/secrets/cert/www.tensorvortex.cn/" + getCommonSecret().tensorvortex_cn_key_filename), "utf8"),
-            cert: fs.readFileSync(path.join(__dirname, "/secrets/cert/www.tensorvortex.cn/" + getCommonSecret().tensorvortex_cn_pem_filename), "utf8"),
+        'tensorvortex.cn': createSecureContext({
+            key: fs.readFileSync(path.join(__dirname, '/secrets/cert/www.tensorvortex.cn/' + getCommonSecret().tensorvortex_cn_key_filename), 'utf8'),
+            cert: fs.readFileSync(path.join(__dirname, '/secrets/cert/www.tensorvortex.cn/' + getCommonSecret().tensorvortex_cn_pem_filename), 'utf8'),
         }),
-        "localhost": tls.createSecureContext({
-            key: fs.readFileSync(path.join(__dirname, "/secrets/cert/localhost/" + getCommonSecret().localhost_key_filename), "utf8"),
-            cert: fs.readFileSync(path.join(__dirname, "/secrets/cert/localhost/" + getCommonSecret().localhost_pem_filename), "utf8"),
+        'localhost': createSecureContext({
+            key: fs.readFileSync(path.join(__dirname, '/secrets/cert/localhost/' + getCommonSecret().localhost_key_filename), 'utf8'),
+            cert: fs.readFileSync(path.join(__dirname, '/secrets/cert/localhost/' + getCommonSecret().localhost_pem_filename), 'utf8'),
             // ca: fs.readFileSync("../path_to_certificate_authority_bundle.ca-bundle1", "utf8"), // this ca property is optional
         }),
     };
@@ -105,30 +109,26 @@ const startServer = (application: Express) => {
 
     try {
 
-        let options = {
-            SNICallback: function (domain: any, cb: any) {
-                if (secureContext[domain]) {
+        const options: SecureServerSessionOptions = {
+            SNICallback: (domainStr, cb) => {
+                if (secureContext[domainStr]) {
                     if (cb) {
-                        cb(null, secureContext[domain]);
-                    } else {
-                        // compatibility for older versions of node
-                        return secureContext[domain];
+                        return cb(null, secureContext[domainStr]);
                     }
+                    return secureContext[domainStr];
                 } else {
-                    // No such domain, use local host self signed cert.
                     if (cb) {
-                        cb(null, secureContext["localhost"]);
-                    } else {
-                        return secureContext["localhost"];
+                        return cb(null, secureContext['localhost']);
                     }
+                    return secureContext['localhost'];
                 }
             },
-            key: fs.readFileSync(path.join(__dirname, "/secrets/cert/localhost/" + getCommonSecret().localhost_key_filename), "utf8"),
-            cert: fs.readFileSync(path.join(__dirname, "/secrets/cert/localhost/" + getCommonSecret().localhost_pem_filename), "utf8"),
+            key: fs.readFileSync(path.join(__dirname, '/secrets/cert/localhost/' + getCommonSecret().localhost_key_filename), 'utf8'),
+            cert: fs.readFileSync(path.join(__dirname, '/secrets/cert/localhost/' + getCommonSecret().localhost_pem_filename), 'utf8'),
             requestCert: false,
         };
-        https.createServer(options, application).listen(app.get("secPort"), () => {
-            console.log("SERVER", " started at https://localhost:" + app.get("secPort"));
+        https.createServer(options, application).listen(app.get('secPort'), () => {
+            console.log('SERVER', ' started at https://localhost:' + app.get('secPort'));
         });
     } catch (err) {
         console.error(err.message);
@@ -140,15 +140,15 @@ const startServer = (application: Express) => {
 const enableInsecureServerRedirect = () => {
     const httpApp = express();
     // force https
-    httpApp.all("*", (req, res, next) => {
+    httpApp.all('*', (req, res, next) => {
         if (req.secure) return next();
 
-        else if (req.hostname === "localhost") return res.redirect(307, "https://" + req.hostname + ":8200" + req.url);
-        else return res.redirect(307, "https://" + req.hostname + req.url);
+        else if (req.hostname === 'localhost') return res.redirect(307, 'https://' + req.hostname + ':8200' + req.url);
+        else return res.redirect(307, 'https://' + req.hostname + req.url);
 
     });
     http.createServer({}, httpApp).listen(getConfig().httpPort, () => {
-        console.log("SERVER", " started at https://localhost:" + getConfig().httpPort);
+        console.log('SERVER', ' started at https://localhost:' + getConfig().httpPort);
     });
 };
 
@@ -162,9 +162,9 @@ client.connect((err: Error, mongoClient) => {
     if (err) {
         throw err;
     }
-    console.log("Connected successfully to Mongodb server");
+    console.log('Connected successfully to Mongodb server');
 
-    let gfs = new GridFS(mongoClient);
+    const gfs = new GridFS(mongoClient);
 
     enableRoute(app, mongoClient, gfs);
     startServer(app);

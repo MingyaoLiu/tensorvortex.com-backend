@@ -1,9 +1,10 @@
-import { randomBytes } from "crypto";
-import { EventEmitter } from "events";
-import { Request, Response } from "express";
-import { Collection, Db, GridFSBucket, GridFSBucketReadStream, MongoClient, ObjectId } from "mongodb";
-import { pipeline, Readable, Writable, WritableOptions } from "stream";
-import { getConfig } from "./config";
+
+import { Db, GridFSBucket, GridFSBucketReadStream, MongoClient, ObjectId } from 'mongodb';
+import { Readable, Writable } from 'stream';
+import { Request } from 'express';
+import { getConfig } from './config';
+import { randomBytes } from 'crypto';
+import { EventEmitter } from 'events';
 
 export class GridReadStream {
 
@@ -30,7 +31,7 @@ export class GridReadStream {
                 this._buffer = Buffer.concat([this._buffer, chunk]);
                 // this._writableStream.destroy()
                 if (this._writableStream.writableFinished) {
-                    console.log("writable is finished in data");
+                    console.log('writable is finished in data');
                 }
             }
             done();
@@ -41,52 +42,52 @@ export class GridReadStream {
         this.startPipeBuffer();
     }
 
-    addReadStreamEventListener = () => {
+    addReadStreamEventListener = (): void => {
         this._bucketReadStream
-            .on("file", (file) => {
+            .on('file', (file) => {
                 console.log(file);
             })
-            .on("end", () => {
-                console.log("Read End");
-                console.log("read end is write stream ended? ", this._writableStream.writableEnded);
-                console.log("read end is write stream finished? ", this._writableStream.writableFinished);
+            .on('end', () => {
+                console.log('Read End');
+                console.log('read end is write stream ended? ', this._writableStream.writableEnded);
+                console.log('read end is write stream finished? ', this._writableStream.writableFinished);
             })
-            .on("close", () => {
-                console.log("Read Close");
-                console.log("read close is write stream ended? ", this._writableStream.writableEnded);
-                console.log("read close is write stream finished? ", this._writableStream.writableFinished);
+            .on('close', () => {
+                console.log('Read Close');
+                console.log('read close is write stream ended? ', this._writableStream.writableEnded);
+                console.log('read close is write stream finished? ', this._writableStream.writableFinished);
             })
-            .on("error", (err) => {
-                console.log("Read Error", err);
+            .on('error', (err) => {
+                console.log('Read Error', err);
             });
     }
 
-    startPipeBuffer = () => {
+    startPipeBuffer = (): void => {
         this._bucketReadStream.pipe(this._writableStream)
-            .once("finish", () => {
-                console.log("Pipe Finished");
-                console.log("p finish is write stream ended? ", this._writableStream.writableEnded);
-                console.log("p finish is write stream finished? ", this._writableStream.writableFinished);
+            .once('finish', () => {
+                console.log('Pipe Finished');
+                console.log('p finish is write stream ended? ', this._writableStream.writableEnded);
+                console.log('p finish is write stream finished? ', this._writableStream.writableFinished);
             })
-            .on("error", (err) => {
-                console.log("Pipe Error", err);
+            .on('error', (err) => {
+                console.log('Pipe Error', err);
             })
-            .on("close", () => {
+            .on('close', () => {
 
-                console.log("Pipe Close");
-                console.log("p close is write stream ended? ", this._writableStream.writableEnded);
-                console.log("p close is write stream finished? ", this._writableStream.writableFinished);
+                console.log('Pipe Close');
+                console.log('p close is write stream ended? ', this._writableStream.writableEnded);
+                console.log('p close is write stream finished? ', this._writableStream.writableFinished);
             })
-            .on("pipe", () => {
-                console.log("Pipe Piping");
+            .on('pipe', () => {
+                console.log('Pipe Piping');
             })
-            .on("drain", () => {
-                console.log("Pipe Drain");
+            .on('drain', () => {
+                console.log('Pipe Drain');
             })
-            .on("unpipe", () => {
-                console.log("Pipe unpipe");
-                console.log("p unpipe is write stream ended? ", this._writableStream.writableEnded);
-                console.log("p unpipe is write stream finished? ", this._writableStream.writableFinished);
+            .on('unpipe', () => {
+                console.log('Pipe unpipe');
+                console.log('p unpipe is write stream ended? ', this._writableStream.writableEnded);
+                console.log('p unpipe is write stream finished? ', this._writableStream.writableFinished);
             });
     }
 }
@@ -107,11 +108,11 @@ export class GridFS {
     }
 
     checkExistById(id: ObjectId): Promise<ObjectId> {
-        let promise: Promise<ObjectId> = new Promise((resolve, reject) => {
+        const promise: Promise<ObjectId> = new Promise((resolve, reject) => {
             this._bucket.find({ _id: id }).toArray((mongoErr, items) => {
                 if (mongoErr) return reject(mongoErr);
-                if (items.length === 0) return reject(TypeError("No item found with this id."));
-                if (items.length > 1) return reject(">1 items with same id!");
+                if (items.length === 0) return reject(TypeError('No item found with this id.'));
+                if (items.length > 1) return reject('>1 items with same id!');
                 return resolve(id);
             });
         });
@@ -119,11 +120,11 @@ export class GridFS {
     }
 
     checkExistByName(filename: string): Promise<ObjectId> {
-        let promise: Promise<ObjectId> = new Promise((resolve, reject) => {
+        const promise: Promise<ObjectId> = new Promise((resolve, reject) => {
             this._bucket.find({ filename: filename }).toArray((mongoErr, items) => {
                 if (mongoErr) return reject(mongoErr);
-                if (items.length === 0) return reject(TypeError("No item found with this id."));
-                if (items.length > 1) return reject(">1 items with same id!");
+                if (items.length === 0) return reject(TypeError('No item found with this id.'));
+                if (items.length > 1) return reject('>1 items with same id!');
                 return resolve(items[0]._id);
             });
         });
@@ -131,9 +132,9 @@ export class GridFS {
     }
 
     getFileById(id: ObjectId): Promise<Readable> {
-        let promise: Promise<Readable> = new Promise((resolve, reject) => {
+        const promise: Promise<Readable> = new Promise((resolve, reject) => {
             this.checkExistById(id)
-                .then((sameId) => {
+                .then(() => {
                     return resolve(this._bucket.openDownloadStream(id));
                 })
                 .catch((err) => {
@@ -144,7 +145,7 @@ export class GridFS {
     }
 
     getFileByName(filename: string): Promise<Readable> {
-        let promise: Promise<Readable> = new Promise((resolve, reject) => {
+        const promise: Promise<Readable> = new Promise((resolve, reject) => {
             this.checkExistByName(filename)
                 .then((id) => {
                     return resolve(this._bucket.openDownloadStream(id));
@@ -156,30 +157,30 @@ export class GridFS {
         return promise;
     }
 
-    addNewFile = (req: Request) => {
-        let promise = new Promise((resolve, reject) => {
+    addNewFile = (req: Request): Promise<unknown> => {
+        const promise = new Promise((resolve) => {
             console.log(req.headers);
-            const filename = String(new Date().toISOString().split("T")[0]) + "." + String(req.headers["file-name"]).substring(0, 12) + "." + String(randomBytes(4).toString("hex") + ".png");
+            const filename = String(new Date().toISOString().split('T')[0]) + '.' + String(req.headers['file-name']).substring(0, 12) + '.' + String(randomBytes(4).toString('hex') + '.png');
             const writeStream = this._bucket.openUploadStream(filename);
             req.pipe(writeStream)
-                .once("finish", (id: any) => {
-                    console.log("write finish", id);
+                .once('finish', (id: any) => {
+                    console.log('write finish', id);
                     return resolve(id);
                 });
         });
         return promise;
     }
 
-    removeOneFileById = (imageId: ObjectId) => {
+    removeOneFileById = (imageId: ObjectId): Promise<unknown> => {
         const promise = new Promise<void>((resolve, reject) => {
             this.checkExistById(imageId)
-                .then((sameId) => {
+                .then(() => {
                     this._bucket.delete(imageId, (err) => {
                         if (err) return reject(err);
                         return resolve();
                     });
                 })
-                .catch((err) => {
+                .catch(() => {
                     return resolve();
                 });
         });

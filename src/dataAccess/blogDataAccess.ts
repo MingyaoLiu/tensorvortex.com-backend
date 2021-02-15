@@ -6,10 +6,10 @@
  * @license tensorvortex@2020
  */
 
-import { Request, Response } from "express";
-import { Collection, Db, MongoCallback, MongoClient, ObjectId } from "mongodb";
-import { Post } from "../model/post";
-import { getConfig } from "../util/config";
+import { Request, Response } from 'express';
+import { Collection, Db, MongoCallback, MongoClient, ObjectId } from 'mongodb';
+import { Post } from '../model/post';
+import { getConfig } from '../util/config';
 
 
 export class BlogDataAccess {
@@ -27,7 +27,7 @@ export class BlogDataAccess {
     }
 
     public getAllBlog = () => {
-        let promise = new Promise((resolve, reject) => {
+        const promise = new Promise((resolve, reject) => {
             this._postCol
                 .find({})
                 .sort({ date: -1 })
@@ -41,7 +41,7 @@ export class BlogDataAccess {
     }
 
     public getAllComments = (postId: ObjectId) => {
-        let promise = new Promise((resolve, reject) => {
+        const promise = new Promise((resolve, reject) => {
             this._postCol
                 .findOne({ _id: postId }, (err, purchase) => {
                     if (err) return reject(err);

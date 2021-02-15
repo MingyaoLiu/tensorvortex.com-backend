@@ -5,13 +5,13 @@
  * @license tensorvortex@2020
  */
 
-import { Buffer } from "buffer";
-import { createHmac, sign } from "crypto";
-import { ObjectId } from "mongodb";
-import { JWTHeader } from "../model/jwtHeader";
-import { JWTPayload } from "../model/jwtPayload";
-import { getConfig } from "./config";
-import { ServerError } from "./constants";
+import { Buffer } from 'buffer';
+import { createHmac, sign } from 'crypto';
+import { ObjectId } from 'mongodb';
+import { JWTHeader } from '../model/jwtHeader';
+import { JWTPayload } from '../model/jwtPayload';
+import { getConfig } from './config';
+import { ServerError } from './constants';
 
 
 
@@ -31,22 +31,27 @@ export class JWT {
         this._jwt = jwt;
     }
 
-    public verifyToken(): [TypeError?, Boolean?] {
-        let headerData = this._jwt.header;
-        let payloadData = this._jwt.payload;
-        let [headErr, headerToken] = JWT.encodeBase64(headerData);
-        let [payloErr, payloadToken] = JWT.encodeBase64(payloadData);
-        if (headErr || payloErr || !headerToken || !payloadToken) return [TypeError(String(headErr?.message) + String(payloErr?.message))];
-        let [err, sig] = JWT.encodeSigWithToken(headerToken, payloadToken);
-        if (err) return [err];
-        if (!sig || sig !== this._jwt.signature) return [ServerError.JWT_SIG_VERI_FAILED];
-        return [, true];
+    public verifyToken(): [TypeError?, boolean?] {
+        try {
+            const headerData = this._jwt.header;
+            const payloadData = this._jwt.payload;
+            const [headErr, headerToken] = JWT.encodeBase64(headerData);
+            const [payloErr, payloadToken] = JWT.encodeBase64(payloadData);
+            if (headErr || payloErr || !headerToken || !payloadToken) return [TypeError(String(headErr?.message) + String(payloErr?.message))];
+            const [err, sig] = JWT.encodeSigWithToken(headerToken, payloadToken);
+            if (err) return [err];
+            if (!sig || sig !== this._jwt.signature) return [ServerError.JWT_SIG_VERI_FAILED];
+            return [, true];
+        } catch (err) {
+            return [err]
+        }
+
     }
 
     public generateJWTToken(): JWTToken {
-        let [headErr, headerToken] = JWT.encodeBase64(this._jwt.header);
-        let [payloErr, payloadToken] = JWT.encodeBase64(this._jwt.payload);
-        let jwtToken = headerToken + "." + payloadToken + "." + this._jwt.signature;
+        const [headErr, headerToken] = JWT.encodeBase64(this._jwt.header);
+        const [payloErr, payloadToken] = JWT.encodeBase64(this._jwt.payload);
+        const jwtToken = headerToken + '.' + payloadToken + '.' + this._jwt.signature;
         return { value: jwtToken };
     }
 
@@ -64,7 +69,7 @@ export class JWT {
 
     static initPayloadFromJSON(json: any): JWTPayload {
         const payload: JWTPayload = {
-            client_id: new ObjectId(json.client_id),
+            clientId: new ObjectId(json.clientId),
             exp: Number(json.exp),
             iat: json.iat,
         };
@@ -72,7 +77,7 @@ export class JWT {
     }
 
     static initJWTFromData(header: JWTHeader, payload: JWTPayload, signature: string): JWTInterface {
-        let jwtData: JWTInterface = {
+        const jwtData: JWTInterface = {
             header: header,
             payload: payload,
             signature: signature,
@@ -93,8 +98,8 @@ export class JWT {
         if (heaErr || payloErr || !headerToken || !payloadToken) return [TypeError(String(heaErr?.message) + String(payloErr?.message))];
         const [sigErr, sigToken] = this.encodeSigWithToken(headerToken, payloadToken);
         if (sigErr || !sigToken) return [sigErr];
-        let headerData = this.initHeaderFromJSON(header);
-        let payloadData = this.initPayloadFromJSON(payload);
+        const headerData = this.initHeaderFromJSON(header);
+        const payloadData = this.initPayloadFromJSON(payload);
         return [, new JWT(this.initJWTFromData(headerData, payloadData, sigToken))];
     }
 
@@ -107,31 +112,29 @@ export class JWT {
     static fromToken(token: JWTToken): [TypeError?, JWT?] {
         const [veriErr, isValid] = this.sigIntegrityCheck(token);
         if (veriErr || !isValid) return [veriErr];
-        const lst = token.value.split(".");
+        const lst = token.value.split('.');
         if (lst.length < 2 || lst.length > 3) return [ServerError.JWT_TOKEN_INVALID];
-        let [heaErr, header] = this.decodeBase64(lst[0]);
-        let [payloErr, payload] = this.decodeBase64(lst[1]);
+        const [heaErr, header] = this.decodeBase64(lst[0]);
+        const [payloErr, payload] = this.decodeBase64(lst[1]);
         if (heaErr || payloErr || !header || !payload) return [TypeError(String(heaErr?.message) + String(payloErr?.message))];
-        let headerData = this.initHeaderFromJSON(header);
-        let payloadData = this.initPayloadFromJSON(payload);
+        const headerData = this.initHeaderFromJSON(header);
+        const payloadData = this.initPayloadFromJSON(payload);
         return [, new JWT(this.initJWTFromData(headerData, payloadData, lst[2]))];
     }
 
     /**
     * @method encodeBase64
     * @description Encode obj to base64 string.
-    * @param str string
+    * @param data Buffer Object
     * @returns Tuple(TypeError?, string?)
     */
-    static encodeBase64(data: object): [TypeError?, string?] {
-        try {
-            const str = JSON.stringify(data);
-            return [, Buffer.from(str)
-                .toString("base64")
-                .replace(/\+/g, "-")
-                .replace(/\//g, "_")
-                .replace(/=/g, "")];
-        } catch (err) { return [TypeError(String(err))]; }
+    static encodeBase64(data: Buffer): string {
+        const str = JSON.stringify(data);
+        return Buffer.from(str)
+            .toString('base64')
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=/g, '');
     }
 
     /**
@@ -142,7 +145,7 @@ export class JWT {
      */
     static decodeBase64(str: string): [TypeError?, object?] {
         try {
-            const buf = Buffer.from(str, "base64").toString("binary");
+            const buf = Buffer.from(str, 'base64').toString('binary');
             const de = JSON.parse(buf);
             return [, de];
         } catch (err) { return [ServerError.JWT_BASE64_DEC_FAILED]; }
@@ -157,12 +160,12 @@ export class JWT {
      */
     static encodeSigWithToken(header: string, payload: string): [TypeError?, string?] {
         try {
-            let sig: string = createHmac("SHA256", getConfig().app_secret)
-                .update(header + "." + payload)
-                .digest("base64")
-                .replace(/=/g, "")
-                .replace(/\+/g, "-")
-                .replace(/\//g, "_");
+            const sig: string = createHmac('SHA256', getConfig().app_secret)
+                .update(header + '.' + payload)
+                .digest('base64')
+                .replace(/=/g, '')
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_');
             if (!sig) return [ServerError.JWT_SIG_ENC_ERROR];
             return [, sig];
         } catch (err) { return [TypeError(String(err))]; }
@@ -177,8 +180,8 @@ export class JWT {
      */
     static encodeSignature(header: JWTHeader, payload: JWTPayload): [TypeError?, string?] {
         try {
-            let [headerErr, headerToken] = JWT.encodeBase64(header);
-            let [payloadErr, payloadToken] = JWT.encodeBase64(payload);
+            const [headerErr, headerToken] = JWT.encodeBase64(header);
+            const [payloadErr, payloadToken] = JWT.encodeBase64(payload);
             if (headerErr || payloadErr || !headerToken || !payloadToken) return [TypeError(String(headerErr?.message) + String(payloadErr?.message))];
             return this.encodeSigWithToken(headerToken, payloadToken);
         } catch (err) { return [TypeError(String(err))]; }
@@ -191,9 +194,9 @@ export class JWT {
      * @returns Tuple(TypeError?, JWTPayload?)
      */
     static tokenCheck(token: JWTToken): [TypeError?, JWTPayload?] {
-        let [err, jwt] = JWT.fromToken(token);
+        const [err, jwt] = JWT.fromToken(token);
         if (err || !jwt) return [err];
-        let payload = jwt._jwt.payload;
+        const payload = jwt._jwt.payload;
         const [expErr, isValid] = JWT.verifyExpiration(payload);
         if (expErr || !isValid) return [expErr];
         return [, payload];
@@ -205,9 +208,9 @@ export class JWT {
     * @param payload JWTPayload
     * @returns Tuple(TypeError?, Boolean?)
     */
-    static verifyExpiration(payloadData: JWTPayload): [TypeError?, Boolean?] {
-        let iatDate: Date = new Date(payloadData.iat);
-        let expDate = new Date(iatDate.setTime(iatDate.getTime() + payloadData.exp));
+    static verifyExpiration(payloadData: JWTPayload): [TypeError?, boolean?] {
+        const iatDate: Date = new Date(payloadData.iat);
+        const expDate = new Date(iatDate.setTime(iatDate.getTime() + payloadData.exp));
         if (expDate <= new Date()) {
             return [ServerError.JWT_TOKEN_EXPIRED, false];
         }
@@ -220,10 +223,10 @@ export class JWT {
     * @param token JWTToken
     * @returns Tuple(TypeError?, Boolean?)
     */
-    static sigIntegrityCheck(token: JWTToken): [TypeError?, Boolean?] {
-        const lst = token.value.split(".");
+    static sigIntegrityCheck(token: JWTToken): [TypeError?, boolean?] {
+        const lst = token.value.split('.');
         if (lst.length < 2 || lst.length > 3) return [ServerError.JWT_TOKEN_INVALID];
-        let [err, sig] = this.encodeSigWithToken(lst[0], lst[1]);
+        const [err, sig] = this.encodeSigWithToken(lst[0], lst[1]);
         if (err) return [err];
         if (!sig || sig !== lst[2]) return [ServerError.JWT_SIG_VERI_FAILED];
         return [, true];
