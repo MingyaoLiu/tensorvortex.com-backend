@@ -43,7 +43,7 @@ export class JWT {
             if (!sig || sig !== this._jwt.signature) return [ServerError.JWT_SIG_VERI_FAILED];
             return [, true];
         } catch (err) {
-            return [err]
+            return [err];
         }
 
     }
@@ -55,7 +55,7 @@ export class JWT {
         return { value: jwtToken };
     }
 
-    // static genJSONFromData(data: JWTHeader | JWTPayload): object {
+    // static genJSONFromData(data: JWTHeader | JWTPayload): any {
     //     return JSON.parse(JSON.stringify(data));
     // }
 
@@ -92,7 +92,7 @@ export class JWT {
     * @param payload object
     * @returns Tuple(TypeError?, JWT?)
     */
-    static fromData(header: object, payload: object): [TypeError?, JWT?] {
+    static fromData(header: any, payload: any): [TypeError?, JWT?] {
         const [heaErr, headerToken] = this.encodeBase64(header);
         const [payloErr, payloadToken] = this.encodeBase64(payload);
         if (heaErr || payloErr || !headerToken || !payloadToken) return [TypeError(String(heaErr?.message) + String(payloErr?.message))];
@@ -143,7 +143,7 @@ export class JWT {
      * @param str string
      * @returns Tuple(TypeError?, object?)
      */
-    static decodeBase64(str: string): [TypeError?, object?] {
+    static decodeBase64(str: string): [TypeError?, any?] {
         try {
             const buf = Buffer.from(str, 'base64').toString('binary');
             const de = JSON.parse(buf);

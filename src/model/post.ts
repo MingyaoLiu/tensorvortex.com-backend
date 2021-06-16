@@ -1,5 +1,5 @@
-import { ObjectId } from "mongodb";
-import { prod_secret } from "../secrets/serverSecret";
+import { ObjectId } from 'mongodb';
+import { prod_secret } from '../secrets/serverSecret';
 
 
 export interface SentenceInterface {
@@ -68,14 +68,14 @@ export class Post implements PostInterface {
         this.createdAt = createdAt ?? new Date();
         this.published = published ?? false;
         this.draft = draft ?? true;
-        this.author = author ?? "";
-        this.title = title ?? "";
-        this.subTitle = subTitle ?? "";
+        this.author = author ?? '';
+        this.title = title ?? '';
+        this.subTitle = subTitle ?? '';
         this.article = article ?? [];
     }
 
     static initJson(json: PostInterface): Post {
-        let sentences = Sentence.initList(json.article);
+        const sentences = Sentence.initList(json.article);
         return new Post(
             json._id,
             json.createdAt,

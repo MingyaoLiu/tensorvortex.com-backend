@@ -55,7 +55,7 @@
             "warn"
         ],
         "camelcase": [
-            "error",
+            "warn",
             {
                 "properties": "always",
                 "ignoreGlobals": true
@@ -94,13 +94,16 @@
             "error"
         ],
         "consistent-return": [
-            "error"
+            "warn"
         ],
         "no-unsafe-finally": [
             "error"
         ],
         "array-callback-return":[
             "error"
+        ],
+        "no-sparse-arrays": [
+            "warn"
         ]
     }
 }

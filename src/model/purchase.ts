@@ -1,6 +1,6 @@
-import { create } from "domain";
-import { ObjectId } from "mongodb";
-import { Util } from "../util/util";
+import { create } from 'domain';
+import { ObjectId } from 'mongodb';
+import { Util } from '../util/util';
 
 export interface PurchaseInterface {
     _id?: ObjectId;
@@ -49,7 +49,7 @@ export class Purchase {
     }
 
     parse = (json: any) => {
-        let a: PurchaseInterface = {
+        const a: PurchaseInterface = {
             _id: Util.parseObjectId(json._id)[1],
             createdAt: new Date(json.createdAt),
             title: json.title,

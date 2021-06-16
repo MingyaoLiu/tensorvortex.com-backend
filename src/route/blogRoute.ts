@@ -11,7 +11,7 @@ export class BlogRoute {
         this._blogDA = blogDA;
     }
 
-    public getRoutes(): unknown {
+    public getRoutes(): Router {
         const router = Router();
 
         router.get('/api/posts', (req: Request, res: Response) => {
