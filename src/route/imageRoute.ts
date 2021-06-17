@@ -15,7 +15,7 @@ export class ImageRoute {
         const router = Router();
 
         router.get('/api/image', (req: Request, res: Response) => {
-            const [err, objId] = Util.parseObjectId(req.body.id);
+            const [, objId] = Util.parseObjectId(req.body.id);
             if (req.body.id && objId) return this._imageDA.getImageById(new ObjectId(req.body.id), res);
             if (req.body.filename) return this._imageDA.getImageByName(req.body.filename, res);
             return res.status(403).send('No image id or filename requested.');
