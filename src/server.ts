@@ -84,20 +84,20 @@ const startServer = (application: Express) => {
     // Certificate
     const secureContext: Record<string, SecureContext> = {
         'liumingyao.com': createSecureContext({
-            key: fs.readFileSync(path.join(__dirname, ('/secrets/cert/www.liumingyao.com/' + getCommonSecret().liumingyao_key_filename)), 'utf8'),
-            cert: fs.readFileSync(path.join(__dirname, ('/secrets/cert/www.liumingyao.com/' + getCommonSecret().liumingyao_pem_filename)), 'utf8'),
+            key: fs.readFileSync(path.join(__dirname, ('/secrets/cert/liumingyao.com/' + getCommonSecret().liumingyao_key_filename)), 'utf8'),
+            cert: fs.readFileSync(path.join(__dirname, ('/secrets/cert/liumingyao.com/' + getCommonSecret().liumingyao_pem_filename)), 'utf8'),
         }),
         'mingyaoliu.com': createSecureContext({
-            key: fs.readFileSync(path.join(__dirname, ('/secrets/cert/www.mingyaoliu.com/' + getCommonSecret().mingyaoliu_key_filename)), 'utf8'),
-            cert: fs.readFileSync(path.join(__dirname, ('/secrets/cert/www.mingyaoliu.com/' + getCommonSecret().mingyaoliu_pem_filename)), 'utf8'),
+            key: fs.readFileSync(path.join(__dirname, ('/secrets/cert/mingyaoliu.com/' + getCommonSecret().mingyaoliu_key_filename)), 'utf8'),
+            cert: fs.readFileSync(path.join(__dirname, ('/secrets/cert/mingyaoliu.com/' + getCommonSecret().mingyaoliu_pem_filename)), 'utf8'),
         }),
         'tensorvortex.com': createSecureContext({
-            key: fs.readFileSync(path.join(__dirname, '/secrets/cert/www.tensorvortex.com/' + getCommonSecret().tensorvortex_com_key_filename), 'utf8'),
-            cert: fs.readFileSync(path.join(__dirname, '/secrets/cert/www.tensorvortex.com/' + getCommonSecret().tensorvortex_com_pem_filename), 'utf8'),
+            key: fs.readFileSync(path.join(__dirname, '/secrets/cert/tensorvortex.com/' + getCommonSecret().tensorvortex_com_key_filename), 'utf8'),
+            cert: fs.readFileSync(path.join(__dirname, '/secrets/cert/tensorvortex.com/' + getCommonSecret().tensorvortex_com_pem_filename), 'utf8'),
         }),
         'tensorvortex.cn': createSecureContext({
-            key: fs.readFileSync(path.join(__dirname, '/secrets/cert/www.tensorvortex.cn/' + getCommonSecret().tensorvortex_cn_key_filename), 'utf8'),
-            cert: fs.readFileSync(path.join(__dirname, '/secrets/cert/www.tensorvortex.cn/' + getCommonSecret().tensorvortex_cn_pem_filename), 'utf8'),
+            key: fs.readFileSync(path.join(__dirname, '/secrets/cert/tensorvortex.cn/' + getCommonSecret().tensorvortex_cn_key_filename), 'utf8'),
+            cert: fs.readFileSync(path.join(__dirname, '/secrets/cert/tensorvortex.cn/' + getCommonSecret().tensorvortex_cn_pem_filename), 'utf8'),
         }),
         'localhost': createSecureContext({
             key: fs.readFileSync(path.join(__dirname, '/secrets/cert/localhost/' + getCommonSecret().localhost_key_filename), 'utf8'),
