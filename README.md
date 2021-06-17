@@ -1,12 +1,12 @@
 # tensorvortex.com Node Server
 
-### dev env set up
+### Dev Env set up
 
 `npm install`
 
 `npm run watch`
 
-### test
-### test 2
-### test 3
-### test 4
+
+### Testing (master)
+
+[![Node-Server-AutoBuild&Test](https://github.com/MingyaoLiu/tensorvortex.com-backend/actions/workflows/TestBuild.yml/badge.svg)](https://github.com/MingyaoLiu/tensorvortex.com-backend/actions/workflows/TestBuild.yml)
