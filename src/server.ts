@@ -143,7 +143,7 @@ const enableInsecureServerRedirect = () => {
     httpApp.all('*', (req, res, next) => {
         if (req.secure) return next();
 
-        else if (req.hostname === 'localhost') return res.redirect(307, 'https://' + req.hostname + ':8200' + req.url);
+        else if (req.hostname === 'localhost') return res.redirect(307, 'https://' + req.hostname + ':' + getConfig().httpsPort + req.url);
         else return res.redirect(307, 'https://' + req.hostname + req.url);
 
     });
